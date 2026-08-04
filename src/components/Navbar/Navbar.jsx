@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { FaGoogle } from 'react-icons/fa6'
@@ -16,6 +16,7 @@ export default function Navbar() {
     return storedUser ? JSON.parse(storedUser) : null
   })
   const [authError, setAuthError] = useState(null)
+  const [isGoogleReady, setIsGoogleReady] = useState(false)
   const isScrolled = useScrollPosition(24)
   const location = useLocation()
 
@@ -23,9 +24,15 @@ export default function Navbar() {
 
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
+  // Pakai ref supaya callback yang dipegang Google SDK selalu memanggil versi terbaru,
+  // meskipun initialize() cuma dipanggil sekali.
+  const handleCredentialResponseRef = useRef(null)
+
   const handleCredentialResponse = async (response) => {
     try {
       setAuthError(null)
+      console.log('[GoogleAuth] credential response diterima:', response)
+
       if (!response?.credential) {
         throw new Error('Google credential missing')
       }
@@ -36,55 +43,81 @@ export default function Navbar() {
       setUser(data.user)
       setIsLoginOpen(false)
     } catch (error) {
+      console.error('[GoogleAuth] login gagal:', error)
       setAuthError(error.message)
     }
   }
 
+  // Simpan versi terbaru function ke ref setiap render, tanpa memicu init ulang
+  useEffect(() => {
+    handleCredentialResponseRef.current = handleCredentialResponse
+  })
+
   useEffect(() => {
     const storedUser = localStorage.getItem('authUser')
     if (storedUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(storedUser))
     }
   }, [])
 
+  // Inisialisasi Google Identity Services HANYA SEKALI
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID) {
       console.warn('Missing VITE_GOOGLE_CLIENT_ID in environment')
       return
     }
 
-    if (window.google?.accounts?.id) {
+    const initializeGoogle = () => {
+      if (!window.google?.accounts?.id) return
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        // callback stabil, tapi selalu delegasikan ke versi terbaru lewat ref
+        callback: (response) => handleCredentialResponseRef.current?.(response),
+      })
+      setIsGoogleReady(true)
+      console.log('[GoogleAuth] Google Identity Services initialized')
+    }
+
+    // Kalau script sudah pernah dimuat sebelumnya (misal saat dev hot-reload), langsung init
+    const existingScript = document.getElementById('google-gsi-script')
+    if (existingScript) {
+      if (window.google?.accounts?.id) {
+        initializeGoogle()
+      } else {
+        existingScript.addEventListener('load', initializeGoogle)
+      }
       return
     }
 
     const script = document.createElement('script')
+    script.id = 'google-gsi-script'
     script.src = 'https://accounts.google.com/gsi/client'
     script.async = true
     script.defer = true
-    script.onload = () => {
-      if (window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleCredentialResponse,
-        })
-      }
-    }
-
+    script.onload = initializeGoogle
     document.head.appendChild(script)
 
-    return () => {
-      document.head.removeChild(script)
-    }
+    // Sengaja TIDAK di-remove saat unmount, karena Google SDK bersifat global/singleton
+    // dan menghapusnya justru memicu initialize() ganda saat komponen mount ulang.
   }, [GOOGLE_CLIENT_ID])
 
   const handleGoogleLogin = () => {
-    if (!window.google?.accounts?.id) {
+    if (!isGoogleReady || !window.google?.accounts?.id) {
       setAuthError('Tunggu sebentar, Google auth sedang dimuat.')
       return
     }
 
     setAuthError(null)
-    window.google.accounts.id.prompt()
+    window.google.accounts.id.prompt((notification) => {
+      // Debug: tahu kalau prompt di-skip/di-dismiss oleh browser
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        console.warn(
+          '[GoogleAuth] prompt tidak tampil:',
+          notification.getNotDisplayedReason?.() || notification.getSkippedReason?.()
+        )
+      }
+    })
   }
 
   const handleLogout = () => {
