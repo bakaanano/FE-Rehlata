@@ -7,6 +7,8 @@ import PackageDetail from '../pages/PackageDetail/PackageDetail'
 import GalleryPage from '../pages/Gallery/GalleryPage'
 import Blog from '../pages/Blog/Blog'
 import Contact from '../pages/Contact/Contact'
+import AdminDashboard from '../pages/Admin/AdminDashboard'
+import ProtectedRoute from './ProtectedRoute'
 
 export default function AppRoutes() {
   return (
@@ -20,6 +22,16 @@ export default function AppRoutes() {
         <Route path="blog" element={<Blog />} />
         <Route path="contact" element={<Contact />} />
       </Route>
+
+      <Route
+        path="admin"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
