@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { FaGoogle } from 'react-icons/fa6'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [isGoogleReady, setIsGoogleReady] = useState(false)
   const isScrolled = useScrollPosition(24)
   const location = useLocation()
+  const navigate = useNavigate()
 
   const isHome = location.pathname === '/' && !location.hash
 
@@ -42,6 +43,13 @@ export default function Navbar() {
       localStorage.setItem('authUser', JSON.stringify(data.user))
       setUser(data.user)
       setIsLoginOpen(false)
+
+      // Redirect ke dashboard admin kalau role user adalah admin.
+      // Sebelumnya tidak ada pengecekan role/redirect sama sekali di sini,
+      // itu sebabnya admin login sukses tapi tidak pernah diarahkan ke /admin.
+      if (data.user?.role?.toLowerCase() === 'admin') {
+        navigate('/admin')
+      }
     } catch (error) {
       console.error('[GoogleAuth] login gagal:', error)
       setAuthError(error.message)
