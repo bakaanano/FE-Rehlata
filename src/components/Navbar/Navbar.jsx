@@ -1,19 +1,98 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { FaGoogle } from 'react-icons/fa6'
 import { motion, AnimatePresence } from 'framer-motion'
 import { navigationLinks } from '../../constants/siteData'
 import useScrollPosition from '../../hooks/useScrollPosition'
+import { sendGoogleLogin } from '../../services/auth'
 import Button from '../Button/Button'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('authUser')
+    return storedUser ? JSON.parse(storedUser) : null
+  })
+  const [authError, setAuthError] = useState(null)
   const isScrolled = useScrollPosition(24)
   const location = useLocation()
 
   const isHome = location.pathname === '/' && !location.hash
+
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
+  const handleCredentialResponse = async (response) => {
+    try {
+      setAuthError(null)
+      if (!response?.credential) {
+        throw new Error('Google credential missing')
+      }
+
+      const data = await sendGoogleLogin(response.credential)
+      localStorage.setItem('authToken', data.token)
+      localStorage.setItem('authUser', JSON.stringify(data.user))
+      setUser(data.user)
+      setIsLoginOpen(false)
+    } catch (error) {
+      setAuthError(error.message)
+    }
+  }
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('authUser')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID) {
+      console.warn('Missing VITE_GOOGLE_CLIENT_ID in environment')
+      return
+    }
+
+    if (window.google?.accounts?.id) {
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+        })
+      }
+    }
+
+    document.head.appendChild(script)
+
+    return () => {
+      document.head.removeChild(script)
+    }
+  }, [GOOGLE_CLIENT_ID])
+
+  const handleGoogleLogin = () => {
+    if (!window.google?.accounts?.id) {
+      setAuthError('Tunggu sebentar, Google auth sedang dimuat.')
+      return
+    }
+
+    setAuthError(null)
+    window.google.accounts.id.prompt()
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authUser')
+    setUser(null)
+    setAuthError(null)
+  }
 
   return (
     <header className={`navbar ${isHome && !isScrolled ? 'navbar--transparent' : 'navbar--scrolled'}`}>
@@ -36,14 +115,23 @@ export default function Navbar() {
             Daftar Umrah
           </Button>
 
-          <Button
-            type="button"
-            variant="primary"
-            className="navbar__login-button"
-            onClick={() => setIsLoginOpen(true)}
-          >
-            <FaGoogle /> Login
-          </Button>
+          {user ? (
+            <div className="navbar__user-box">
+              <span className="navbar__user-name">Halo, {user.nama || user.name || 'Pengguna'}</span>
+              <Button type="button" variant="ghost" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Button
+              type="button"
+              variant="primary"
+              className="navbar__login-button"
+              onClick={() => setIsLoginOpen(true)}
+            >
+              <FaGoogle /> Login
+            </Button>
+          )}
 
           <button
             type="button"
@@ -145,12 +233,11 @@ export default function Navbar() {
                 type="button"
                 variant="ghost"
                 className="auth-modal__google"
-                onClick={() => {
-                  window.open('https://accounts.google.com/signin', '_blank', 'noopener,noreferrer')
-                }}
+                onClick={handleGoogleLogin}
               >
                 <FaGoogle /> Lanjutkan dengan Google
               </Button>
+              {authError ? <p className="auth-modal__error">{authError}</p> : null}
             </motion.div>
           </motion.div>
         ) : null}
