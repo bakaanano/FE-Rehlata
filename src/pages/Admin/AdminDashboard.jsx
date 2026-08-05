@@ -201,17 +201,26 @@ export default function AdminDashboard() {
             </div>
 
             <div className="admin-dashboard__grid">
-              <div className="admin-dashboard__card">
-                <h2>Jumlah Paket</h2>
-                <p>{dashboard.summary.packages}</p>
+              <div className="admin-dashboard__card admin-dashboard__metric-card">
+                <div className="admin-dashboard__metric-header">
+                  <span className="admin-dashboard__metric-icon">📦</span>
+                  <span>Jumlah Paket</span>
+                </div>
+                <p className="admin-dashboard__metric-value">{dashboard.summary.packages}</p>
               </div>
-              <div className="admin-dashboard__card">
-                <h2>Jumlah Jadwal</h2>
-                <p>{dashboard.summary.schedules}</p>
+              <div className="admin-dashboard__card admin-dashboard__metric-card">
+                <div className="admin-dashboard__metric-header">
+                  <span className="admin-dashboard__metric-icon">🗓️</span>
+                  <span>Jumlah Jadwal</span>
+                </div>
+                <p className="admin-dashboard__metric-value">{dashboard.summary.schedules}</p>
               </div>
-              <div className="admin-dashboard__card">
-                <h2>Jumlah Pengguna</h2>
-                <p>{dashboard.summary.users}</p>
+              <div className="admin-dashboard__card admin-dashboard__metric-card">
+                <div className="admin-dashboard__metric-header">
+                  <span className="admin-dashboard__metric-icon">👥</span>
+                  <span>Jumlah Pengguna</span>
+                </div>
+                <p className="admin-dashboard__metric-value">{dashboard.summary.users}</p>
               </div>
             </div>
 
@@ -222,8 +231,11 @@ export default function AdminDashboard() {
             <div className="admin-dashboard__content">
               <section className="admin-dashboard__panel">
                 <div className="admin-dashboard__panel-header">
-                  <h2>CRUD Paket</h2>
-                  <span>{editingPackageId ? 'Edit paket' : 'Tambah paket'}</span>
+                  <div>
+                    <h2>CRUD Paket</h2>
+                    <span className="admin-dashboard__panel-subtitle">{editingPackageId ? 'Edit paket aktif' : 'Tambah paket baru'}</span>
+                  </div>
+                  {editingPackageId ? <span className="admin-dashboard__status-badge admin-dashboard__status-badge--edit">Mode Edit</span> : null}
                 </div>
 
                 <form className="admin-dashboard__form" onSubmit={submitPackage}>
@@ -306,8 +318,11 @@ export default function AdminDashboard() {
 
               <section className="admin-dashboard__panel">
                 <div className="admin-dashboard__panel-header">
-                  <h2>CRUD Jadwal Keberangkatan</h2>
-                  <span>{editingScheduleId ? 'Edit jadwal' : 'Tambah jadwal'}</span>
+                  <div>
+                    <h2>CRUD Jadwal Keberangkatan</h2>
+                    <span className="admin-dashboard__panel-subtitle">{editingScheduleId ? 'Edit jadwal aktif' : 'Tambah jadwal baru'}</span>
+                  </div>
+                  {editingScheduleId ? <span className="admin-dashboard__status-badge admin-dashboard__status-badge--edit">Mode Edit</span> : null}
                 </div>
 
                 <form className="admin-dashboard__form" onSubmit={submitSchedule}>
@@ -373,7 +388,11 @@ export default function AdminDashboard() {
                         <tr key={item.id_jadwal}>
                           <td>{item.tanggal_berangkat}</td>
                           <td>{item.kuota}</td>
-                          <td>{item.status}</td>
+                          <td>
+                        <span className={`admin-dashboard__status-badge admin-dashboard__status-badge--${item.status === 'tersedia' ? 'available' : 'full'}`}>
+                          {item.status}
+                        </span>
+                      </td>
                           <td>
                             <div className="admin-dashboard__table-actions">
                               <Button type="button" variant="ghost" onClick={() => startEditSchedule(item)}>

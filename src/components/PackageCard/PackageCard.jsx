@@ -23,10 +23,6 @@ export default function PackageCard({ packageItem }) {
               <span>Hotel</span>
               <strong>{packageItem.hotel}</strong>
             </div>
-            <div className="package-card__spec">
-              <span>Maskapai</span>
-              <strong>{packageItem.airline}</strong>
-            </div>
           </div>
 
           <div className="package-card__footer">
