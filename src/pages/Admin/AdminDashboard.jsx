@@ -15,20 +15,18 @@ const emptyPackageForm = {
   deskripsi: '',
   harga: '',
   durasi: '',
-  slug: '',
-  status: 'aktif',
+  fasilitas: '',
 }
 
 const emptyScheduleForm = {
   id_paket: '',
-  tanggal_keberangkatan: '',
-  maskapai: '',
+  tanggal_berangkat: '',
   kuota: '',
   status: 'tersedia',
 }
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState(() => {
+  const [user] = useState(() => {
     const storedUser = localStorage.getItem('authUser')
     if (!storedUser) return null
 
@@ -145,8 +143,7 @@ export default function AdminDashboard() {
       deskripsi: item.deskripsi || '',
       harga: item.harga || '',
       durasi: item.durasi || '',
-      slug: item.slug || '',
-      status: item.status || 'aktif',
+      fasilitas: item.fasilitas || '',
     })
   }
 
@@ -154,8 +151,7 @@ export default function AdminDashboard() {
     setEditingScheduleId(item.id_jadwal)
     setScheduleForm({
       id_paket: item.id_paket || '',
-      tanggal_keberangkatan: item.tanggal_keberangkatan || '',
-      maskapai: item.maskapai || '',
+      tanggal_berangkat: item.tanggal_berangkat || '',
       kuota: item.kuota || '',
       status: item.status || 'tersedia',
     })
@@ -242,6 +238,11 @@ export default function AdminDashboard() {
                     value={packageForm.deskripsi}
                     onChange={(event) => setPackageForm((current) => ({ ...current, deskripsi: event.target.value }))}
                   />
+                  <textarea
+                    placeholder="Fasilitas (mis. Hotel bintang 5, Tiket pesawat, Visa, dll.)"
+                    value={packageForm.fasilitas}
+                    onChange={(event) => setPackageForm((current) => ({ ...current, fasilitas: event.target.value }))}
+                  />
                   <input
                     type="text"
                     placeholder="Harga"
@@ -250,23 +251,10 @@ export default function AdminDashboard() {
                   />
                   <input
                     type="text"
-                    placeholder="Durasi"
+                    placeholder="Durasi (hari)"
                     value={packageForm.durasi}
                     onChange={(event) => setPackageForm((current) => ({ ...current, durasi: event.target.value }))}
                   />
-                  <input
-                    type="text"
-                    placeholder="Slug"
-                    value={packageForm.slug}
-                    onChange={(event) => setPackageForm((current) => ({ ...current, slug: event.target.value }))}
-                  />
-                  <select
-                    value={packageForm.status}
-                    onChange={(event) => setPackageForm((current) => ({ ...current, status: event.target.value }))}
-                  >
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
-                  </select>
 
                   <div className="admin-dashboard__form-actions">
                     <Button type="submit" variant="primary">{editingPackageId ? 'Simpan Perubahan' : 'Tambah Paket'}</Button>
@@ -291,7 +279,6 @@ export default function AdminDashboard() {
                       <tr>
                         <th>Nama</th>
                         <th>Harga</th>
-                        <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
@@ -300,7 +287,6 @@ export default function AdminDashboard() {
                         <tr key={item.id_paket}>
                           <td>{item.nama_paket}</td>
                           <td>{item.harga}</td>
-                          <td>{item.status}</td>
                           <td>
                             <div className="admin-dashboard__table-actions">
                               <Button type="button" variant="ghost" onClick={() => startEditPackage(item)}>
@@ -338,14 +324,8 @@ export default function AdminDashboard() {
                   </select>
                   <input
                     type="date"
-                    value={scheduleForm.tanggal_keberangkatan}
-                    onChange={(event) => setScheduleForm((current) => ({ ...current, tanggal_keberangkatan: event.target.value }))}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Maskapai"
-                    value={scheduleForm.maskapai}
-                    onChange={(event) => setScheduleForm((current) => ({ ...current, maskapai: event.target.value }))}
+                    value={scheduleForm.tanggal_berangkat}
+                    onChange={(event) => setScheduleForm((current) => ({ ...current, tanggal_berangkat: event.target.value }))}
                   />
                   <input
                     type="number"
@@ -383,7 +363,6 @@ export default function AdminDashboard() {
                     <thead>
                       <tr>
                         <th>Tanggal</th>
-                        <th>Maskapai</th>
                         <th>Kuota</th>
                         <th>Status</th>
                         <th>Aksi</th>
@@ -392,8 +371,7 @@ export default function AdminDashboard() {
                     <tbody>
                       {schedules.map((item) => (
                         <tr key={item.id_jadwal}>
-                          <td>{item.tanggal_keberangkatan}</td>
-                          <td>{item.maskapai}</td>
+                          <td>{item.tanggal_berangkat}</td>
                           <td>{item.kuota}</td>
                           <td>{item.status}</td>
                           <td>
