@@ -1,7 +1,7 @@
 export const navigationLinks = [
   { label: 'Beranda', href: '/#beranda' },
-  { label: 'Paket Umrah', href: '/#paket' },
-  { label: 'Jadwal', href: '/#jadwal' },
+  { label: 'Paket Umrah', href: '/package' },
+  { label: 'Jadwal', href: '/schedule' },
   { label: 'Tentang', href: '/about' },
   { label: 'Galeri', href: '/gallery' },
   { label: 'Artikel', href: '/blog' },
