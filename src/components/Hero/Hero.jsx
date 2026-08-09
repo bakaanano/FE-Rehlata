@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '../Button/Button'
 import { heroStats } from '../../constants/siteData'
@@ -22,7 +23,7 @@ export default function Hero() {
 
               <motion.div className="hero__actions" variants={fadeLeft}>
                 <Button as="a" href="#paket" variant="primary">Lihat Paket</Button>
-                <Button as="a" href="#kontak" variant="secondary">Hubungi Kami</Button>
+                <Button as={Link} to="/contact" variant="secondary">Hubungi Kami</Button>
               </motion.div>
             </motion.div>
 
