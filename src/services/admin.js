@@ -95,3 +95,58 @@ export async function deleteSchedule(id) {
   })
   return handleResponse(response)
 }
+
+// Knowledge Base
+export async function getKnowledgeBaseList(params = {}) {
+  const query = new URLSearchParams()
+
+  if (params.page) query.set('page', params.page)
+  if (params.limit) query.set('limit', params.limit)
+  if (params.search) query.set('search', params.search)
+  if (params.kategori) query.set('kategori', params.kategori)
+  if (params.id_paket !== undefined && params.id_paket !== '') query.set('id_paket', params.id_paket)
+
+  const queryString = query.toString()
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/knowledge-base${queryString ? `?${queryString}` : ''}`,
+    {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    },
+  )
+  return handleResponse(response)
+}
+
+export async function getKnowledgeBaseDetail(id) {
+  const response = await fetch(`${API_BASE_URL}/api/admin/knowledge-base/${id}`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  })
+  return handleResponse(response)
+}
+
+export async function createKnowledgeBase(payload) {
+  const response = await fetch(`${API_BASE_URL}/api/admin/knowledge-base`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  })
+  return handleResponse(response)
+}
+
+export async function updateKnowledgeBase(id, payload) {
+  const response = await fetch(`${API_BASE_URL}/api/admin/knowledge-base/${id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  })
+  return handleResponse(response)
+}
+
+export async function deleteKnowledgeBase(id) {
+  const response = await fetch(`${API_BASE_URL}/api/admin/knowledge-base/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  })
+  return handleResponse(response)
+}

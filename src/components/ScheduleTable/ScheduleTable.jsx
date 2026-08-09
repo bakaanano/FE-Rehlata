@@ -58,7 +58,7 @@ export default function ScheduleTable() {
                     <th>Paket</th>
                     <th>Kuota</th>
                     <th>Status</th>
-                    <th>Aksi</th>
+                    {/* <th>Aksi</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -75,9 +75,9 @@ export default function ScheduleTable() {
                             {schedule.status}
                           </span>
                         </td>
-                        <td>
+                        {/* <td>
                           <Button type="button" variant="ghost">Detail</Button>
-                        </td>
+                        </td> */}
                       </tr>
                     )
                   })}
