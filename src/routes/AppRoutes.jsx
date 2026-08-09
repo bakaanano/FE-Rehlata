@@ -5,7 +5,6 @@ import About from '../pages/About/About'
 import Package from '../pages/Package/Package'
 import PackageDetail from '../pages/PackageDetail/PackageDetail'
 import GalleryPage from '../pages/Gallery/GalleryPage'
-import Blog from '../pages/Blog/Blog'
 import Contact from '../pages/Contact/Contact'
 import Schedule from '../pages/Schedule/Schedule'
 import AdminDashboard from '../pages/Admin/AdminDashboard'
@@ -21,7 +20,6 @@ export default function AppRoutes() {
         <Route path="package/:slug" element={<PackageDetail />} />
         <Route path="schedule" element={<Schedule />} />
         <Route path="gallery" element={<GalleryPage />} />
-        <Route path="blog" element={<Blog />} />
         <Route path="contact" element={<Contact />} />
       </Route>
 

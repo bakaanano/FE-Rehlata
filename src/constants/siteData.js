@@ -4,7 +4,6 @@ export const navigationLinks = [
   { label: 'Jadwal', href: '/schedule' },
   { label: 'Tentang', href: '/about' },
   { label: 'Galeri', href: '/gallery' },
-  { label: 'Artikel', href: '/blog' },
   { label: 'Kontak', href: '/contact' },
 ]
 

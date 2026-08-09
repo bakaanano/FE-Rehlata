@@ -152,27 +152,29 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <Button as={Link} to="/contact" variant="ghost">
-            Daftar Umrah
-          </Button>
-
-          {user ? (
-            <div className="navbar__user-box">
-              <span className="navbar__user-name">Halo, {user.nama || user.name || 'Pengguna'}</span>
-              <Button type="button" variant="ghost" onClick={handleLogout}>
-                Logout
+          <div className="navbar__actions">
+            {user ? (
+              <div className="navbar__user-box">
+                <span className="navbar__user-name">Halo, {user.nama || user.name || 'Pengguna'}</span>
+                <Button type="button" variant="ghost" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="ghost"
+                className="navbar__login-button"
+                onClick={() => setIsLoginOpen(true)}
+              >
+                <FaGoogle /> Log In
               </Button>
-            </div>
-          ) : (
-            <Button
-              type="button"
-              variant="primary"
-              className="navbar__login-button"
-              onClick={() => setIsLoginOpen(true)}
-            >
-              <FaGoogle /> Login
+            )}
+
+            <Button as={Link} to="/contact" variant="primary" className="navbar__register-button">
+              Daftar Umrah
             </Button>
-          )}
+          </div>
 
           <button
             type="button"

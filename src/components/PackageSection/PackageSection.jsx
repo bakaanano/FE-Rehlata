@@ -49,18 +49,14 @@ export default function PackageSection() {
   return (
     <section className="section" id="paket">
       <div className="container">
-        <SectionTitle
-          eyebrow="Paket Umrah"
-          title="Pilihan paket elegan untuk setiap kebutuhan"
-          description="Semua paket dirancang untuk menghadirkan pengalaman premium, nyaman, dan penuh ketenangan sejak keberangkatan hingga kembali ke tanah air."
-        />
+        <SectionTitle title="Umrah Travel Package" />
 
         {error ? <p className="section-error">Gagal memuat paket: {error}</p> : null}
         {loading ? <p className="section-loading">Memuat paket...</p> : null}
 
         <motion.div className="packages__grid" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
-          {packages.map((packageItem) => (
-            <PackageCard key={packageItem.id} packageItem={packageItem} />
+          {packages.map((packageItem, index) => (
+            <PackageCard key={packageItem.id} packageItem={packageItem} index={index} />
           ))}
         </motion.div>
       </div>
