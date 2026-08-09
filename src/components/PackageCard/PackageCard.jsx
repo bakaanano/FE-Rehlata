@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { FaStar, FaRegClock } from 'react-icons/fa6'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
+import { Link } from 'react-router-dom'
 import { scaleIn } from '../../utils/motion'
 
 const badgeLabels = ['Diskon Awal', 'Tersisa Terbatas', 'Diskon Akhir', 'Paling Favorit']
@@ -34,7 +35,7 @@ export default function PackageCard({ packageItem, index = 0 }) {
               <span className="package-card__price">{packageItem.price}</span>
             </div>
 
-            <Button type="button" variant="primary" className="package-card__cta">
+            <Button type="button" variant="primary" className="package-card__cta" as={Link} to="/contact">
               Pesan Sekarang
             </Button>
           </div>
