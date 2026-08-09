@@ -6,12 +6,12 @@ export default function About() {
     <PageShell
       eyebrow="Tentang"
       title="Rehlata Tour membangun pengalaman umrah yang tenang dan berkelas"
-      description="Halaman ini menjadi placeholder untuk profil perusahaan, tim, dan nilai layanan yang nanti bisa diperluas sesuai kebutuhan bisnis."
+      description="Rehlata Tour adalah perusahaan travel umrah yang berfokus pada pengalaman perjalanan yang tenang, elegan, dan aman bagi keluarga Indonesia. Kami mengutamakan kenyamanan dan kepuasan jamaah dalam setiap aspek layanan kami."
     >
       <SectionTitle
         eyebrow="Profil Singkat"
         title="Modern, premium, dan berorientasi pada kenyamanan jamaah"
-        description="Template ini sudah disiapkan untuk dilengkapi konten lanjutan tanpa mengubah fondasi desain utamanya."
+        description="Rehlata Tour adalah perusahaan travel umrah yang berfokus pada pengalaman perjalanan yang tenang, elegan, dan aman bagi keluarga Indonesia. Kami mengutamakan kenyamanan dan kepuasan jamaah dalam setiap aspek layanan kami."
       />
     </PageShell>
   )
