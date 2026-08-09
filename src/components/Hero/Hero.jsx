@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import Button from '../Button/Button'
-import SearchForm from '../SearchForm/SearchForm'
 import { heroStats } from '../../constants/siteData'
 import { fadeLeft, fadeRight, staggerContainer } from '../../utils/motion'
 
@@ -25,20 +24,8 @@ export default function Hero() {
                 <Button as="a" href="#paket" variant="primary">Lihat Paket</Button>
                 <Button as="a" href="#kontak" variant="secondary">Hubungi Kami</Button>
               </motion.div>
-
-              <motion.div className="hero__stats" variants={fadeLeft}>
-                {heroStats.map((stat) => (
-                  <div className="hero__stat" key={stat.label}>
-                    <span className="hero__stat-value">{stat.value}</span>
-                    <span className="hero__stat-label">{stat.label}</span>
-                  </div>
-                ))}
-              </motion.div>
             </motion.div>
 
-            <motion.div variants={fadeRight} initial="hidden" animate="show">
-              <SearchForm />
-            </motion.div>
           </div>
         </div>
       </div>

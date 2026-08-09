@@ -1,41 +1,42 @@
 import { motion } from 'framer-motion'
-import { FaStar } from 'react-icons/fa6'
+import { FaStar, FaRegClock } from 'react-icons/fa6'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
 import { scaleIn } from '../../utils/motion'
 
-export default function PackageCard({ packageItem }) {
+const badgeLabels = ['Diskon Awal', 'Tersisa Terbatas', 'Diskon Akhir', 'Paling Favorit']
+
+export default function PackageCard({ packageItem, index = 0 }) {
+  const badgeLabel = badgeLabels[index % badgeLabels.length]
+  const description = [packageItem.hotel, packageItem.airline].filter(Boolean).join(' • ')
+
   return (
     <motion.article variants={scaleIn} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }}>
       <Card className="package-card">
-        <img className="package-card__image" src={packageItem.image} alt={packageItem.name} />
+        <div className="package-card__media">
+          <span className="package-card__badge">{badgeLabel}</span>
+          <img className="package-card__image" src={packageItem.image} alt={packageItem.name} />
+        </div>
+
         <div className="package-card__body">
-          <div>
-            <h3 className="package-card__title">{packageItem.name}</h3>
-            <div className="package-card__meta">
-              <span>{packageItem.duration}</span>
-              <span>{packageItem.rating}</span>
-            </div>
+          <h3 className="package-card__title">{packageItem.name}</h3>
+
+          <div className="package-card__meta">
+            <span><FaRegClock /> {packageItem.duration}</span>
+            <span><FaStar /> {packageItem.rating}</span>
           </div>
 
-          <div className="package-card__specs">
-            <div className="package-card__spec">
-              <span>Hotel</span>
-              <strong>{packageItem.hotel}</strong>
-            </div>
-          </div>
+          {description ? <p className="package-card__description">{description}</p> : null}
 
           <div className="package-card__footer">
-            <div>
+            <div className="package-card__price-block">
+              <span className="package-card__price-label">Mulai dari</span>
               <span className="package-card__price">{packageItem.price}</span>
-              <div className="package-card__rating">
-                <span className="package-card__rating-badge">
-                  <FaStar /> {packageItem.rating}
-                </span>
-              </div>
             </div>
 
-            <Button type="button" variant="ghost">Detail</Button>
+            <Button type="button" variant="primary" className="package-card__cta">
+              Pesan Sekarang
+            </Button>
           </div>
         </div>
       </Card>
