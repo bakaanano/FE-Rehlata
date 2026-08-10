@@ -19,6 +19,7 @@ export default function Chatbot() {
   const [error, setError] = useState(null)
   const [botName, setBotName] = useState('Rehlata Assistant')
   const [userId, setUserId] = useState(null)
+  const hasUserStartedChat = messages.some((message) => message.role === 'user')
 
   const loadStoredUserId = () => {
     const storedUser = localStorage.getItem('authUser')
@@ -127,18 +128,20 @@ export default function Chatbot() {
 
             {error ? <div className="chatbot__error">{error}</div> : null}
 
-            <div className="chatbot__quick-replies">
-              {quickReplies.map((reply) => (
-                <button
-                  key={reply}
-                  type="button"
-                  className="chatbot__chip"
-                  onClick={() => handleQuickReply(reply)}
-                >
-                  {reply}
-                </button>
-              ))}
-            </div>
+            {!hasUserStartedChat ? (
+              <div className="chatbot__quick-replies">
+                {quickReplies.map((reply) => (
+                  <button
+                    key={reply}
+                    type="button"
+                    className="chatbot__chip"
+                    onClick={() => handleQuickReply(reply)}
+                  >
+                    {reply}
+                  </button>
+                ))}
+              </div>
+            ) : null}
 
             <form className="chatbot__input-group" onSubmit={handleSubmit}>
               <input
